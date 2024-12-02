@@ -2,6 +2,8 @@
 using EjemploEnClase.Model;
 using EjemploEnClase.Repository;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 
@@ -128,6 +130,30 @@ namespace EjemploEnClase.Controllers
         public async Task<IEnumerable<object>> ObtenerProductosConChef1()
         {
             return await _repository.ObtenerProductosConChef();
+        }
+
+        [HttpDelete]
+        [Route("api/EliminarOrdenPorID")]
+        public async Task<bool> EliminarOrdenPorID([Required, FromQuery] int id)
+        {
+            return await _repository.EliminarOrdenPorID(id);
+        }
+
+        [HttpPut]
+        [Route("api/ModificarNombreEmpleado")]
+
+        public async Task<bool> ModificarNombreEmpleado([Required, FromQuery] int id, [Required, FromQuery] string nombre)
+        {
+            return await _repository.ModificarNombreEmpleado(id, nombre);
+        }
+
+
+        [HttpPut]
+        [Route("api/InsertarEmpleado")]
+
+        public async Task<bool> InsertarEmpleado()
+        {
+            return await _repository.InsertarEmpleado();
         }
 
     }
