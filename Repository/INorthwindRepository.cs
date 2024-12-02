@@ -1,4 +1,6 @@
 ﻿using EjemploEnClase.Model;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace EjemploEnClase.Repository
 {
@@ -32,7 +34,11 @@ namespace EjemploEnClase.Repository
 
         Task<IEnumerable<object>> ObtenerProductosConChef1();
 
+        Task<bool> EliminarOrdenPorID(int id);
 
+        Task<bool> ModificarNombreEmpleado(int id, string nombre);
+
+        Task<bool> InsertarEmpleado();
 
 
 

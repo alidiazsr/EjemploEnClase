@@ -4,12 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using EjemploEnClase.Repository;
 using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
+using System.Collections.Specialized;
+using System.Data.Common;
+using System.Data;
 
 
 namespace EjemploEnClase.Repository
 {
     public class NorthwindRepository : INorthwindRepository
-   {
+    {
         private readonly DataContextNorthwind _dataContext;
         public NorthwindRepository(DataContextNorthwind dataContext)
         {
@@ -76,7 +79,7 @@ namespace EjemploEnClase.Repository
                              FirstName = emp.FirstName
 
                          };
-            
+
             return await result.ToListAsync();
         }
 
@@ -143,7 +146,7 @@ namespace EjemploEnClase.Repository
 
 
 
-        
+
 
 
         //     obtener todos los productos que contienen la palabra "chef" (similar like)
@@ -174,13 +177,51 @@ namespace EjemploEnClase.Repository
             return await result.ToListAsync();
         }
 
+        public async Task<bool> EliminarOrdenPorID(int orderID)
+        {
+            Orders? order = await _dataContext.Orders.Where(r => r.OrderId == orderID).FirstOrDefaultAsync();
+            OrderDetails? orderDetail = await _dataContext.OrderDetails.Where(r => r.OrderId == orderID).FirstOrDefaultAsync();
+
+            _dataContext.OrderDetails.Remove(orderDetail);
+            _dataContext.Orders.Remove(order);
+
+            var resulta = await _dataContext.SaveChangesAsync();
+            return resulta > 0;
+        }
+
+        public async Task<bool> ModificarNombreEmpleado(int idEmpleado, string nombre)
+        {
+            bool actualizado = false;
+            Employees? empleado = await _dataContext.Employees.Where(e => e.EmployeeID == idEmpleado).FirstOrDefaultAsync();
+            if (empleado != null)
+            {
+                empleado.FirstName = nombre;
+                var result = await _dataContext.SaveChangesAsync();
+                actualizado = result > 0;
+            }
+            return actualizado;
+
+        }
+
+        public async Task<bool> InsertarEmpleado()
+        {
+            Employees empleado = new Employees();
+            empleado.Title = "CEO";
+            empleado.Country = "Argentina";
+            empleado.FirstName = "Alicia";
+            empleado.LastName = "Díaz San Román";
+            empleado.HireDate = DateTime.Now;
+            empleado.BirthDate = DateTime.Now;
+            
+            var newEmployee = await _dataContext.AddAsync(empleado);
+            var result =  _dataContext.SaveChanges();
+            
+            return (result > 0);
 
 
-
-
-
-
+            
+            
+        }
 
     }
-
 }
